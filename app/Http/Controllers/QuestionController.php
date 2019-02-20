@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AskQuestionRequest;
 use App\Question;
 use Illuminate\Http\Request;
+use App\Http\Requests\AskQuestionRequest;
 
 class QuestionController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth',['except' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -70,11 +73,17 @@ class QuestionController extends Controller
      */
     public function edit(Question $question)
     {
-        if(\Gate::denies('update-question', $question)){
-            abort(404, 'Access Denied');
-        }
-        return view('questions.edit', compact('question'));
+        /**this code for Using GATE */
+//        if(\Gate::denies('update-question', $question)){
+//            abort(404, 'Access Denied');
+//        }
+//        return view('questions.edit', compact('question'));
 
+
+        /**this code for Using Policy */
+
+        $this->authorize("update", $question);
+        return view('questions.edit', compact('question'));
 
     }
 
@@ -87,9 +96,16 @@ class QuestionController extends Controller
      */
     public function update(AskQuestionRequest $request, Question $question)
     {
-        if(\Gate::denies('update-question', $question)){
-            abort(404, 'Access Denied');
-        }
+        /**this code for Using GATE */
+//        if(\Gate::denies('update-question', $question)){
+//            abort(404, 'Access Denied');
+//        }
+//        $question->update($request->only('title', 'body'));
+//
+//        return redirect('/questions')->with('success',"Your Question has been updated.");
+
+        /**this code for Using POLICIES */
+        $this->authorize("update", $question);
         $question->update($request->only('title', 'body'));
 
         return redirect('/questions')->with('success',"Your Question has been updated.");
@@ -103,11 +119,17 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        if(\Gate::denies('delete-question', $question)){
-            abort(404, 'Access Denied');
-        }
-        $question->delete();
+        /**this code for Using GATE */
+//        if(\Gate::denies('delete-question', $question)){
+//            abort(404, 'Access Denied');
+//        }
+//        $question->delete();
+//
+//        return redirect('/questions')->with('success', "Your question has been successfully deleted.");
 
+        /** This code for using POLICIES */
+        $this->authorize("delete", $question);
+        $question->delete();
         return redirect('/questions')->with('success', "Your question has been successfully deleted.");
     }
 }
