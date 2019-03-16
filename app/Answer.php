@@ -46,6 +46,14 @@ class Answer extends Model
     }
 
     public function getStatuAttribute(){
-        return $this->id === $this->question->best_answer_id ? 'vote-accepted' : '';
+        return $this->is_best() ? 'vote-accepted' : '';
+    }
+
+    public function getIsBestAttribute(){
+        return $this->is_best();
+    }
+
+    public function is_best(){
+        return $this->id === $this->question->best_answer_id;
     }
 }
