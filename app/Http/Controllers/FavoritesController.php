@@ -13,8 +13,8 @@ class FavoritesController extends Controller
         $this->middleware('auth');
     }
 
-    public function store(Question $question){
-
+    public function store(Question $question)
+    {
         $question->favorites()->attach(auth()->id());
         return back();
     }
