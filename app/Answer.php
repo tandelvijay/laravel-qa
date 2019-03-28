@@ -60,4 +60,12 @@ class Answer extends Model
     public function votes(){
         return $this->morphToMany(User::class, 'votable');
     }
+
+    public function downVotes(){
+        return $this->Votes()->wherePivot('vote', -1);
+    }
+
+    public function upVotes(){
+        return $this->Votes()->wherePivot('vote', 1);
+    }
 }
